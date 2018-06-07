@@ -14,14 +14,13 @@ import javax.ws.rs.core.MediaType;
 
 import io.oasp.gastronomy.restaurant.general.common.api.RestService;
 import io.oasp.gastronomy.restaurant.staffmanagement.logic.api.Staffmanagement;
+import io.oasp.gastronomy.restaurant.staffmanagement.logic.api.to.StaffMemberCto;
 import io.oasp.gastronomy.restaurant.staffmanagement.logic.api.to.StaffMemberEto;
 import io.oasp.gastronomy.restaurant.staffmanagement.logic.api.to.StaffMemberSearchCriteriaTo;
 import io.oasp.module.jpa.common.api.to.PaginatedListTo;
 
 /**
- *
  * The service class for REST calls in order to execute the methods in {@link Staffmanagement}.
- *
  */
 @Path("/staffmanagement/v1/staff")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -30,7 +29,6 @@ public interface StaffmanagementRestService extends RestService {
 
   /**
    * @return a list of all {@link StaffMemberEto}
-   *
    */
   @GET
   @Path("/")
@@ -79,5 +77,44 @@ public interface StaffmanagementRestService extends RestService {
   @Path("/search")
   @POST
   PaginatedListTo<StaffMemberEto> findStaffMembersByPost(StaffMemberSearchCriteriaTo searchCriteriaTo);
+
+  /**
+   * Delegates to {@link Staffmanagement#findStaffMember}.
+   *
+   * @param id the ID of the {@link StaffMemberEto}
+   * @return the {@link StaffMemberEto}
+   */
+  @GET
+  @Path("/staffmember/{id}/")
+  public StaffMemberEto getStaffMember(@PathParam("id") long id);
+
+  /**
+   * Delegates to {@link Staffmanagement#deleteStaffMember}.
+   *
+   * @param id ID of the {@link StaffMemberEto} to be deleted
+   */
+  @DELETE
+  @Path("/staffmember/{id}/")
+  public void deleteStaffMember(@PathParam("id") long id);
+
+  /**
+   * Delegates to {@link Staffmanagement#findStaffMemberCto}.
+   *
+   * @param id the ID of the {@link StaffMemberCto}
+   * @return the {@link StaffMemberCto}
+   */
+  @GET
+  @Path("/staffmember/cto/{id}/")
+  public StaffMemberCto getStaffMemberCto(@PathParam("id") long id);
+
+  /**
+   * Delegates to {@link Staffmanagement#findStaffMemberCtos}.
+   *
+   * @param searchCriteriaTo the pagination and search criteria to be used for finding staffmembers.
+   * @return the {@link PaginatedListTo list} of matching {@link StaffMemberCto}s.
+   */
+  @Path("/staffmember/cto/search")
+  @POST
+  public PaginatedListTo<StaffMemberCto> findStaffMemberCtosByPost(StaffMemberSearchCriteriaTo searchCriteriaTo);
 
 }

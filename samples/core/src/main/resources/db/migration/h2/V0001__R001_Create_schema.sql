@@ -14,6 +14,7 @@ CREATE TABLE StaffMember(
   lastname VARCHAR(255),
   login VARCHAR(255),
   role INTEGER,
+  password VARCHAR(255),
   CONSTRAINT PK_StaffMember PRIMARY KEY(id),
   CONSTRAINT UC_StaffMember_login UNIQUE(login)
 );

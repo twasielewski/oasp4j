@@ -8,7 +8,6 @@ import io.oasp.module.jpa.dataaccess.api.MasterDataDao;
 
 /**
  * {@link ApplicationDao Data Access Object} for {@link StaffMemberEntity} entity.
- *
  */
 public interface StaffMemberDao extends ApplicationDao<StaffMemberEntity>, MasterDataDao<StaffMemberEntity> {
 

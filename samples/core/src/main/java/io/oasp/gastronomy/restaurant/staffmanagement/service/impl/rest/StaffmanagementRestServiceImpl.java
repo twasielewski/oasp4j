@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import io.oasp.gastronomy.restaurant.staffmanagement.logic.api.Staffmanagement;
+import io.oasp.gastronomy.restaurant.staffmanagement.logic.api.to.StaffMemberCto;
 import io.oasp.gastronomy.restaurant.staffmanagement.logic.api.to.StaffMemberEto;
 import io.oasp.gastronomy.restaurant.staffmanagement.logic.api.to.StaffMemberSearchCriteriaTo;
 import io.oasp.gastronomy.restaurant.staffmanagement.service.api.rest.StaffmanagementRestService;
@@ -39,10 +40,6 @@ public class StaffmanagementRestServiceImpl implements StaffmanagementRestServic
     return this.staffmanagement.findStaffMemberByLogin(login);
   }
 
-  // although login is not explicitly needed here, the path structure is intentionally chosen
-  // it is up to the GUI-Team to either insert a (maybe redundant) call on getStaffMember or to leave it
-  // like that and do the update right in the view of a previously "loaded" StaffMember
-
   @Override
   @Deprecated
   public void updateStaffMember(StaffMemberEto staffMemberBo) {
@@ -67,4 +64,29 @@ public class StaffmanagementRestServiceImpl implements StaffmanagementRestServic
 
     return this.staffmanagement.findStaffMemberEtos(searchCriteriaTo);
   }
+
+  @Override
+  public StaffMemberEto getStaffMember(long id) {
+
+    return this.staffmanagement.findStaffMember(id);
+  }
+
+  @Override
+  public void deleteStaffMember(long id) {
+
+    this.staffmanagement.deleteStaffMember(id);
+  }
+
+  @Override
+  public StaffMemberCto getStaffMemberCto(long id) {
+
+    return this.staffmanagement.findStaffMemberCto(id);
+  }
+
+  @Override
+  public PaginatedListTo<StaffMemberCto> findStaffMemberCtosByPost(StaffMemberSearchCriteriaTo searchCriteriaTo) {
+
+    return this.staffmanagement.findStaffMemberCtos(searchCriteriaTo);
+  }
+
 }

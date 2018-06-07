@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -32,6 +33,8 @@ import io.oasp.gastronomy.restaurant.offermanagement.logic.api.to.ProductFilter;
 import io.oasp.gastronomy.restaurant.offermanagement.logic.api.to.ProductSearchCriteriaTo;
 import io.oasp.gastronomy.restaurant.offermanagement.logic.api.to.ProductSortBy;
 import io.oasp.gastronomy.restaurant.offermanagement.logic.api.to.SideDishEto;
+import io.oasp.gastronomy.restaurant.offermanagement.logic.api.to.SpecialEto;
+import io.oasp.gastronomy.restaurant.offermanagement.logic.api.to.SpecialSearchCriteriaTo;
 import io.oasp.gastronomy.restaurant.offermanagement.service.api.rest.OffermanagementRestService;
 import io.oasp.module.jpa.common.api.to.PaginatedListTo;
 
@@ -221,6 +224,33 @@ public class OffermanagementRestServiceImpl implements OffermanagementRestServic
   public PaginatedListTo<ProductEto> findProductEtosByPost(ProductSearchCriteriaTo searchCriteriaTo) {
 
     return this.offermanagement.findProductEtos(searchCriteriaTo);
+  }
+
+  @Override
+  public SpecialEto getSpecial(long id) {
+
+    return this.offermanagement.findSpecial(id);
+  }
+
+  @Override
+  public SpecialEto saveSpecial(SpecialEto special) {
+
+    return this.offermanagement.saveSpecial(special);
+  }
+
+  @Override
+  public void deleteSpecial(long id) {
+
+    this.offermanagement.deleteSpecial(id);
+  }
+
+  @Override
+  @Deprecated
+  public List<SpecialEto> getAllActiveSpecialsAtLunchTime() {
+
+    SpecialSearchCriteriaTo searchCriteria = new SpecialSearchCriteriaTo();
+    searchCriteria.setDateOfCheckingOffers(LocalDateTime.of(2018, 06, 06, 13, 00));
+    return this.offermanagement.getActiveSpecials(searchCriteria);
   }
 
 }

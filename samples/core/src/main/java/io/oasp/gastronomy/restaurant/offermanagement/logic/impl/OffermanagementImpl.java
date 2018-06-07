@@ -1,5 +1,23 @@
 package io.oasp.gastronomy.restaurant.offermanagement.logic.impl;
 
+import java.sql.Blob;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import javax.annotation.security.RolesAllowed;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.transaction.Transactional;
+import javax.validation.Valid;
+
+import net.sf.mmm.util.exception.api.ObjectMismatchException;
+import net.sf.mmm.util.exception.api.ObjectNotFoundUserException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.oasp.gastronomy.restaurant.general.common.api.constants.PermissionConstants;
 import io.oasp.gastronomy.restaurant.general.common.api.datatype.Money;
 import io.oasp.gastronomy.restaurant.general.logic.api.to.BinaryObjectEto;
@@ -34,24 +52,6 @@ import io.oasp.gastronomy.restaurant.offermanagement.logic.api.to.SpecialEto;
 import io.oasp.gastronomy.restaurant.offermanagement.logic.api.to.SpecialSearchCriteriaTo;
 import io.oasp.module.jpa.common.api.to.PaginatedListTo;
 
-import java.sql.Blob;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import javax.annotation.security.RolesAllowed;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.transaction.Transactional;
-import javax.validation.Valid;
-
-import net.sf.mmm.util.exception.api.ObjectMismatchException;
-import net.sf.mmm.util.exception.api.ObjectNotFoundUserException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Implementation class for {@link Offermanagement}.
  *
@@ -79,7 +79,7 @@ public class OffermanagementImpl extends AbstractComponentFacade implements Offe
 
   /** **/
   private UcManageBinaryObject ucManageBinaryObject;
-  
+
   private SpecialDao specialDao;
 
   /**
@@ -407,29 +407,31 @@ public class OffermanagementImpl extends AbstractComponentFacade implements Offe
     }
   }
 
-	@Override
-	@RolesAllowed(PermissionConstants.FIND_OFFER)
-	public PaginatedListTo<OfferEto> findOfferEtos(OfferSearchCriteriaTo criteria) {
-		criteria.limitMaximumPageSize(MAXIMUM_HIT_LIMIT);
-		PaginatedListTo<OfferEntity> offers = getOfferDao().findOffers(criteria);
-		PaginatedListTo<OfferEto> result = mapPaginatedEntityList(offers, OfferEto.class);
-		for (OfferEto offer : result.getResult()) {
-			Money special = findBestSpecialForOfferNow(offer.getNumber());
-			if(special != null) {
-    			offer.setSpecial(special);
-    			offer.setPrice(offer.getPrice().subtract(special));
-			}
-		}
-		return result;
-	}
+  @Override
+  @RolesAllowed(PermissionConstants.FIND_OFFER)
+  public PaginatedListTo<OfferEto> findOfferEtos(OfferSearchCriteriaTo criteria) {
 
-	private Money findBestSpecialForOfferNow(Long offerNumber) {
-		SpecialSearchCriteriaTo specialCriteria = new SpecialSearchCriteriaTo();
-		specialCriteria.setDateOfCheckingOffers(LocalDateTime.now());
-		specialCriteria.setOfferNumber(offerNumber);
-		Money bestActiveSpecial = specialDao.findBestActiveSpecial(specialCriteria);
-		return bestActiveSpecial;
-	}
+    criteria.limitMaximumPageSize(MAXIMUM_HIT_LIMIT);
+    PaginatedListTo<OfferEntity> offers = getOfferDao().findOffers(criteria);
+    PaginatedListTo<OfferEto> result = mapPaginatedEntityList(offers, OfferEto.class);
+    for (OfferEto offer : result.getResult()) {
+      Money special = findBestSpecialForOfferNow(offer.getNumber());
+      if (special != null) {
+        offer.setSpecial(special);
+        offer.setPrice(offer.getPrice().subtract(special));
+      }
+    }
+    return result;
+  }
+
+  private Money findBestSpecialForOfferNow(Long offerNumber) {
+
+    SpecialSearchCriteriaTo specialCriteria = new SpecialSearchCriteriaTo();
+    specialCriteria.setDateOfCheckingOffers(LocalDateTime.now());
+    specialCriteria.setOfferNumber(offerNumber);
+    Money bestActiveSpecial = this.specialDao.findBestActiveSpecial(specialCriteria);
+    return bestActiveSpecial;
+  }
 
   @Override
   @RolesAllowed(PermissionConstants.FIND_PRODUCT)
@@ -521,32 +523,41 @@ public class OffermanagementImpl extends AbstractComponentFacade implements Offe
 
     this.sideDishDao = sideDishDao;
   }
-  
-	/**
-	 * @param specialDao
-	 *            the {@link SpecialDao} to {@link Inject}.
-	 */
-	@Inject
-	public void setSpecialDao(SpecialDao specialDao) {
 
-		this.specialDao = specialDao;
-	}
+  /**
+   * @param specialDao the {@link SpecialDao} to {@link Inject}.
+   */
+  @Inject
+  public void setSpecialDao(SpecialDao specialDao) {
 
-	@Override
-	public SpecialEto saveSpecial(SpecialEto specialEto) {
-		Objects.requireNonNull(specialEto, "special");
-		SpecialEntity special = specialDao.save(getBeanMapper().map(specialEto, SpecialEntity.class));
-		return getBeanMapper().map(special, SpecialEto.class);
-	}
+    this.specialDao = specialDao;
+  }
 
-	@Override
-	public void deleteSpecial(Long id) {
-		specialDao.delete(id);
-	}
+  @Override
+  public SpecialEto saveSpecial(SpecialEto specialEto) {
 
-	@Override
-	public List<SpecialEto> getActiveSpecials(SpecialSearchCriteriaTo searchCriteria) {
-		return getBeanMapper().mapList(specialDao.findActiveSpecials(searchCriteria), SpecialEto.class);
-	}
+    Objects.requireNonNull(specialEto, "special");
+    SpecialEntity special = this.specialDao.save(getBeanMapper().map(specialEto, SpecialEntity.class));
+    return getBeanMapper().map(special, SpecialEto.class);
+  }
+
+  @Override
+  public void deleteSpecial(Long id) {
+
+    this.specialDao.delete(id);
+  }
+
+  @Override
+  public List<SpecialEto> getActiveSpecials(SpecialSearchCriteriaTo searchCriteria) {
+
+    return getBeanMapper().mapList(this.specialDao.findActiveSpecials(searchCriteria), SpecialEto.class);
+  }
+
+  @Override
+  public SpecialEto findSpecial(Long id) {
+
+    LOG.debug("Get SpecialEto with id '{}' from database.", id);
+    return getBeanMapper().map(this.specialDao.findOne(id), SpecialEto.class);
+  }
 
 }

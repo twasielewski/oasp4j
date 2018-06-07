@@ -1,14 +1,14 @@
 package io.oasp.gastronomy.restaurant.staffmanagement.logic.api;
 
+import java.util.List;
+
+import io.oasp.gastronomy.restaurant.staffmanagement.logic.api.to.StaffMemberCto;
 import io.oasp.gastronomy.restaurant.staffmanagement.logic.api.to.StaffMemberEto;
 import io.oasp.gastronomy.restaurant.staffmanagement.logic.api.to.StaffMemberSearchCriteriaTo;
 import io.oasp.module.jpa.common.api.to.PaginatedListTo;
 
-import java.util.List;
-
 /**
  * Interface for StaffManagement component.
- *
  */
 public interface Staffmanagement {
 
@@ -54,5 +54,21 @@ public interface Staffmanagement {
    * @return the saved {@link StaffMemberEto}
    */
   StaffMemberEto saveStaffMember(StaffMemberEto staffMember);
+
+  /**
+   * Returns a composite StaffMember by its id 'id'.
+   *
+   * @param id The id 'id' of the StaffMember.
+   * @return The {@link StaffMemberCto} with id 'id'
+   */
+  StaffMemberCto findStaffMemberCto(Long id);
+
+  /**
+   * Returns a paginated list of composite StaffMembers matching the search criteria.
+   *
+   * @param criteria the {@link StaffMemberSearchCriteriaTo}.
+   * @return the {@link List} of matching {@link StaffMemberCto}s.
+   */
+  PaginatedListTo<StaffMemberCto> findStaffMemberCtos(StaffMemberSearchCriteriaTo criteria);
 
 }

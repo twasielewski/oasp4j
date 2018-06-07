@@ -2,6 +2,8 @@ package io.oasp.gastronomy.restaurant.staffmanagement.dataaccess.impl.dao;
 
 import static com.querydsl.core.alias.Alias.$;
 
+import java.util.List;
+
 import javax.inject.Named;
 import javax.persistence.TypedQuery;
 
@@ -15,11 +17,12 @@ import io.oasp.gastronomy.restaurant.general.dataaccess.base.dao.ApplicationMast
 import io.oasp.gastronomy.restaurant.staffmanagement.dataaccess.api.StaffMemberEntity;
 import io.oasp.gastronomy.restaurant.staffmanagement.dataaccess.api.dao.StaffMemberDao;
 import io.oasp.gastronomy.restaurant.staffmanagement.logic.api.to.StaffMemberSearchCriteriaTo;
+import io.oasp.module.jpa.common.api.to.OrderByTo;
+import io.oasp.module.jpa.common.api.to.OrderDirection;
 import io.oasp.module.jpa.common.api.to.PaginatedListTo;
 
 /**
  * Implementation of {@link StaffMemberDao}.
- *
  */
 @Named
 public class StaffMemberDaoImpl extends ApplicationMasterDataDaoImpl<StaffMemberEntity> implements StaffMemberDao {
@@ -76,4 +79,51 @@ public class StaffMemberDaoImpl extends ApplicationMasterDataDaoImpl<StaffMember
 
     return findPaginated(criteria, query);
   }
+
+  private void addOrderBy(JPAQuery query, EntityPathBase<StaffMemberEntity> alias, StaffMemberEntity staffmember,
+      List<OrderByTo> sort) {
+
+    if (sort != null && !sort.isEmpty()) {
+      for (OrderByTo orderEntry : sort) {
+        switch (orderEntry.getName()) {
+          case "name":
+            if (OrderDirection.ASC.equals(orderEntry.getDirection())) {
+              query.orderBy(Alias.$(staffmember.getName()).asc());
+            } else {
+              query.orderBy(Alias.$(staffmember.getName()).desc());
+            }
+            break;
+          case "firstName":
+            if (OrderDirection.ASC.equals(orderEntry.getDirection())) {
+              query.orderBy(Alias.$(staffmember.getFirstName()).asc());
+            } else {
+              query.orderBy(Alias.$(staffmember.getFirstName()).desc());
+            }
+            break;
+          case "lastName":
+            if (OrderDirection.ASC.equals(orderEntry.getDirection())) {
+              query.orderBy(Alias.$(staffmember.getLastName()).asc());
+            } else {
+              query.orderBy(Alias.$(staffmember.getLastName()).desc());
+            }
+            break;
+          case "role":
+            if (OrderDirection.ASC.equals(orderEntry.getDirection())) {
+              query.orderBy(Alias.$(staffmember.getRole()).asc());
+            } else {
+              query.orderBy(Alias.$(staffmember.getRole()).desc());
+            }
+            break;
+          case "password":
+            if (OrderDirection.ASC.equals(orderEntry.getDirection())) {
+              query.orderBy(Alias.$(staffmember.getPassword()).asc());
+            } else {
+              query.orderBy(Alias.$(staffmember.getPassword()).desc());
+            }
+            break;
+        }
+      }
+    }
+  }
+
 }

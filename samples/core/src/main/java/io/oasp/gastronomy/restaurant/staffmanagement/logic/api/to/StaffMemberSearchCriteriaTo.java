@@ -6,11 +6,12 @@ import io.oasp.module.jpa.common.api.to.SearchCriteriaTo;
 /**
  * This is the {@link SearchCriteriaTo search criteria} {@link net.sf.mmm.util.transferobject.api.TransferObject TO}
  * used to find {@link io.oasp.gastronomy.restaurant.staffmanagement.common.api.StaffMember}s.
- *
  */
 public class StaffMemberSearchCriteriaTo extends SearchCriteriaTo {
 
-  /** UID for serialization. */
+  /**
+   * UID for serialization.
+   */
   private static final long serialVersionUID = 1L;
 
   private String name;
@@ -20,6 +21,8 @@ public class StaffMemberSearchCriteriaTo extends SearchCriteriaTo {
   private String lastName;
 
   private Role role;
+
+  private String password;
 
   /**
    * The constructor.
@@ -91,6 +94,16 @@ public class StaffMemberSearchCriteriaTo extends SearchCriteriaTo {
   public void setRole(Role role) {
 
     this.role = role;
+  }
+
+  public String getPassword() {
+
+    return password;
+  }
+
+  public void setPassword(String password) {
+
+    this.password = password;
   }
 
 }

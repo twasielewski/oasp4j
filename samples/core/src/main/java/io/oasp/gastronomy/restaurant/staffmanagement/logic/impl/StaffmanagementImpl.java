@@ -20,24 +20,36 @@ import io.oasp.gastronomy.restaurant.general.logic.base.AbstractComponentFacade;
 import io.oasp.gastronomy.restaurant.staffmanagement.dataaccess.api.StaffMemberEntity;
 import io.oasp.gastronomy.restaurant.staffmanagement.dataaccess.api.dao.StaffMemberDao;
 import io.oasp.gastronomy.restaurant.staffmanagement.logic.api.Staffmanagement;
+import io.oasp.gastronomy.restaurant.staffmanagement.logic.api.to.StaffMemberCto;
 import io.oasp.gastronomy.restaurant.staffmanagement.logic.api.to.StaffMemberEto;
 import io.oasp.gastronomy.restaurant.staffmanagement.logic.api.to.StaffMemberSearchCriteriaTo;
 import io.oasp.module.jpa.common.api.to.PaginatedListTo;
 
 /**
  * Implementation of {@link Staffmanagement}.
- *
  */
 @Named
 @Component
 @Transactional
 public class StaffmanagementImpl extends AbstractComponentFacade implements Staffmanagement, Usermanagement {
 
-  /** Logger instance. */
+  /**
+   * Logger instance.
+   */
   private static final Logger LOG = LoggerFactory.getLogger(StaffmanagementImpl.class);
 
-  /** @see #getStaffMemberDao() */
+  /**
+   * @see #getStaffMemberDao()
+   */
   private StaffMemberDao staffMemberDao;
+
+  /**
+   * The constructor.
+   */
+  public StaffmanagementImpl() {
+
+    super();
+  }
 
   /**
    * Do not extract this method as a service, because of PermitAll. (only for login)
@@ -82,7 +94,6 @@ public class StaffmanagementImpl extends AbstractComponentFacade implements Staf
   }
 
   @Override
-  // used during authentication so not authorization annotation (not even @PermitAll) can be used here
   public UserProfile findUserProfileByLogin(String login) {
 
     return privateFindStaffMemberByLogin(login);
@@ -133,8 +144,8 @@ public class StaffmanagementImpl extends AbstractComponentFacade implements Staf
             targetStaffMember.getName(), staffMember.getName());
       }
     }
-    StaffMemberEntity persistedStaffMember =
-        getStaffMemberDao().save(getBeanMapper().map(staffMember, StaffMemberEntity.class));
+    StaffMemberEntity persistedStaffMember = getStaffMemberDao()
+        .save(getBeanMapper().map(staffMember, StaffMemberEntity.class));
     return getBeanMapper().map(persistedStaffMember, StaffMemberEto.class);
   }
 
@@ -155,6 +166,32 @@ public class StaffmanagementImpl extends AbstractComponentFacade implements Staf
   public void setStaffMemberDao(StaffMemberDao staffMemberDao) {
 
     this.staffMemberDao = staffMemberDao;
+  }
+
+  @Override
+  public StaffMemberCto findStaffMemberCto(Long id) {
+
+    LOG.debug("Get StaffMemberCto with id {} from database.", id);
+    StaffMemberEntity entity = getStaffMemberDao().findOne(id);
+    StaffMemberCto cto = new StaffMemberCto();
+    cto.setStaffMember(getBeanMapper().map(entity, StaffMemberEto.class));
+
+    return cto;
+  }
+
+  @Override
+  public PaginatedListTo<StaffMemberCto> findStaffMemberCtos(StaffMemberSearchCriteriaTo criteria) {
+
+    criteria.limitMaximumPageSize(MAXIMUM_HIT_LIMIT);
+    PaginatedListTo<StaffMemberEntity> staffMembers = getStaffMemberDao().findStaffMembers(criteria);
+    List<StaffMemberCto> ctos = new ArrayList<>();
+    for (StaffMemberEntity entity : staffMembers.getResult()) {
+      StaffMemberCto cto = new StaffMemberCto();
+      cto.setStaffMember(getBeanMapper().map(entity, StaffMemberEto.class));
+      ctos.add(cto);
+
+    }
+    return new PaginatedListTo<>(ctos, staffMembers.getPagination());
   }
 
 }

@@ -47,7 +47,11 @@ INSERT INTO BillOrderPosition (billId, orderPositionsId) VALUES (2,3);
 INSERT INTO BillOrderPosition (billId, orderPositionsId) VALUES (2,4);
 
 
-INSERT INTO StaffMember (id, modificationCounter, role, login, firstname, lastname) VALUES (0, 0, 3, 'chief', 'Charly', 'Chief');
-INSERT INTO StaffMember (id, modificationCounter, role, login, firstname, lastname) VALUES (1, 0, 0, 'cook', 'Carl', 'Cook');
-INSERT INTO StaffMember (id, modificationCounter, role, login, firstname, lastname) VALUES (2, 0, 1, 'waiter', 'Willy', 'Waiter');
-INSERT INTO StaffMember (id, modificationCounter, role, login, firstname, lastname) VALUES (3, 0, 2, 'barkeeper', 'Bianca', 'Barkeeper');
+INSERT INTO StaffMember (id, modificationCounter, role, login, firstname, lastname, password) VALUES (0, 0, 3, 'chief', 'Charly', 'Chief', 'chief');
+INSERT INTO StaffMember (id, modificationCounter, role, login, firstname, lastname, password) VALUES (1, 0, 0, 'cook', 'Carl', 'Cook', 'cook');
+INSERT INTO StaffMember (id, modificationCounter, role, login, firstname, lastname, password) VALUES (2, 0, 1, 'waiter', 'Willy', 'Waiter', 'waiter');
+INSERT INTO StaffMember (id, modificationCounter, role, login, firstname, lastname, password) VALUES (3, 0, 2, 'barkeeper', 'Bianca', 'Barkeeper', 'barkeeper');
+INSERT INTO StaffMember (id, modificationCounter, role, login, firstname, lastname, password) VALUES (4, 0, 4, 'manager', 'Mike', 'Manager', 'manager');
+
+INSERT INTO Special (id, modificationCounter, name, offerId, startingDay, startingHour, endingDay, endingHour, specialPrice) VALUES (1, 0, '50% discount', 1, 1, 12, 5, 14, 3.49);
+INSERT INTO Special (id, modificationCounter, name, offerId, startingDay, startingHour, endingDay, endingHour, specialPrice) VALUES (2, 0, '25% discount', 5, 1, 12, 5, 14, 0.90);
